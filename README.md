@@ -45,6 +45,8 @@ This will:
 - Only valid `.pdf` links will be downloaded.
 - Logs include detailed error messages if a download fails.
 
+If you want the json containing the links: [`jsons`](https://github.com/ils94/Brasil-UFOs/blob/main/jsons.zip)
+
 # Versão em PT-BR
 
 Este projeto contém ferramentas para automatizar o download de arquivos PDF do Sistema de Informações do Arquivo Nacional (SIAN). É especialmente útil para baixar grandes lotes de documentos desclassificados, como aqueles relacionados a avistamentos de OVNIs no Brasil.
@@ -91,3 +93,5 @@ Isso irá:
 - Ele tenta novamente até 3 vezes caso um download falhe.
 - Somente links válidos de `.pdf` serão baixados.
 - Os logs incluem mensagens de erro detalhadas em caso de falhas.
+
+Se você quer o json contendo os links: [`jsons`](https://github.com/ils94/Brasil-UFOs/blob/main/jsons.zip)
