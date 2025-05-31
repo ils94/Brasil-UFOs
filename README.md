@@ -45,7 +45,7 @@ This will:
 - Only valid `.pdf` links will be downloaded.
 - Logs include detailed error messages if a download fails.
 
-If you want the json containing the links: [`jsons`](https://github.com/ils94/Brasil-UFOs/blob/main/jsons.zip)
+If you want the json containing the links: [`jsons`](https://github.com/ils94/Brasil-UFOs/raw/refs/heads/main/jsons.zip)
 
 # Versão em PT-BR
 
@@ -94,4 +94,4 @@ Isso irá:
 - Somente links válidos de `.pdf` serão baixados.
 - Os logs incluem mensagens de erro detalhadas em caso de falhas.
 
-Se você quer o json contendo os links: [`jsons`](https://github.com/ils94/Brasil-UFOs/blob/main/jsons.zip)
+Se você quer o json contendo os links: [`jsons`](https://github.com/ils94/Brasil-UFOs/raw/refs/heads/main/jsons.zip)
