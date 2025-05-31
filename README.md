@@ -29,7 +29,7 @@ This project contains tools to help automate the download of PDF files from the 
     
 5.  **Click the button** to download a file named `pdf_paths.txt`, which contains all PDF links from the current page.
 
-> Repeat this process for **each page number** in the SIAN search results to collect all PDF links. And save all `.txt` files in a folder named `txt`
+> Repeat this process for **each page number** in the SIAN search results to collect all PDF links. And save all `.txt` files in a folder named `txt`, after that, put the `txt` folder in the same folder as your `download_pdfs.py` script.
 
 ### 2. Run the Python Downloader Script
 
