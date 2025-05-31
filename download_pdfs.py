@@ -6,10 +6,13 @@ import logging
 from datetime import datetime
 from typing import List, Tuple
 from requests.exceptions import RequestException
+import json
+import re
+import time
 
 BASE_URL = "http://imagem.sian.an.gov.br/acervo/derivadas"
 PDF_DIR = Path("pdfs")
-TXT_DIR = Path("txt")
+JSON_DIR = Path("jsons")
 LOG_DIR = Path("logs")
 MAX_THREADS = min(10, os.cpu_count() * 2)
 TIMEOUT_SECONDS = 15
@@ -54,33 +57,40 @@ def download_pdf(url: str, filename: str, max_retries: int = RETRY_ATTEMPTS) -> 
     return False
 
 
+def sanitize_filename(title: str) -> str:
+    sanitized = re.sub(r'[<>:"/\\|?*\n\r\t]', '_', title).strip()
+    return sanitized[:255]
+
+
 def get_all_links() -> List[Tuple[str, str]]:
-    if not TXT_DIR.exists():
-        logger.error(f"Text file directory not found: {TXT_DIR}")
+    json_files = list(JSON_DIR.glob("*.json"))
+
+    if not json_files:
+        logger.error("No JSON files found in jsons directory.")
         return []
 
     tasks = []
-    txt_files = sorted(TXT_DIR.glob("*.txt"))
-
-    for txt_file in txt_files:
-        logger.info(f"Processing text file: {txt_file}")
+    for json_file in json_files:
         try:
-            with txt_file.open("r", encoding="utf-8") as f:
-                lines = [line.strip() for line in f if line.strip()]
+            with json_file.open("r", encoding="utf-8") as f:
+                data = json.load(f)
 
-            for path in lines:
-                full_url = f"{BASE_URL}{path}"
-                filename = path.split("/")[-1]
-
-                if not filename.endswith('.pdf'):
-                    logger.warning(f"Skipping invalid filename: {filename}")
-                    continue
-
-                tasks.append((full_url, filename))
+            if isinstance(data, list) and all("title" in item and "link" in item for item in data):
+                logger.info(f"Processing JSON file: {json_file}")
+                for item in data:
+                    path = item["link"]
+                    title = item["title"]
+                    sanitized_title = sanitize_filename(title) + ".pdf"
+                    full_url = f"{BASE_URL}{path}"
+                    tasks.append((full_url, sanitized_title))
+            else:
+                logger.warning(f"File {json_file} does not contain expected data format.")
 
         except Exception as e:
-            logger.error(f"Error reading {txt_file}: {str(e)}")
+            logger.warning(f"Failed to parse {json_file}: {str(e)}")
 
+    if not tasks:
+        logger.error("No valid JSON file with 'title' and 'link' fields found.")
     return tasks
 
 
@@ -113,8 +123,6 @@ def main():
 
 
 if __name__ == "__main__":
-    import time
-
     start_time = time.time()
     main()
     logger.info(f"Total execution time: {time.time() - start_time:.2f} seconds")
