@@ -49,3 +49,61 @@ This will:
 -   It automatically retries failed downloads up to 3 times.
 -   Only valid `.pdf` links will be downloaded.
 -   Logs include detailed error messages if a download fails.
+
+# Versão em PT-BR
+
+Este projeto contém ferramentas para automatizar o download de arquivos PDF do Sistema de Informações do Arquivo Nacional (SIAN). É especialmente útil para baixar grandes lotes de documentos desclassificados, como aqueles relacionados a avistamentos de OVNIs no Brasil.
+
+## O que ele faz
+
+1.  **Script Tampermonkey**: Injeta um botão nas páginas do SIAN que permite extrair, com um clique, todos os caminhos de download de PDFs de elementos clicáveis, salvando-os em um arquivo `.txt`.
+    
+2.  **Script Python**: Lê os arquivos `.txt` gerados pelo script do Tampermonkey e baixa todos os PDFs correspondentes em paralelo, usando múltiplas threads, com tratamento de erros e registro em log.
+    
+
+## Requisitos
+
+-   Python 3.10 ou superior
+    
+-   Biblioteca `requests` (instale com `pip install requests`)
+    
+
+## Como usar
+
+### 1. Use o script Tampermonkey no navegador
+
+1.  **Instale a [extensão Tampermonkey](https://www.tampermonkey.net/)** para seu navegador (disponível para Chrome, Firefox, Edge etc.).
+    
+2.  **Crie um novo userscript** e cole o código deste arquivo:  
+    [`Extract PDF Paths and Save as TXT-1.0.user.js`](https://github.com/ils94/Brasil-UFOs/blob/main/Extract%20PDF%20Paths%20and%20Save%20as%20TXT-1.0.user.js)
+    
+3.  **Acesse o site do SIAN** e, no campo **Fundo**, digite:  
+    **`BR DFANBSB ARX - Objeto Voador Não Identificado - Fundo`**
+    
+4.  Um botão chamado **“Save PDF Paths”** aparecerá no canto superior direito da página.
+    
+5.  **Clique no botão** para baixar um arquivo chamado `pdf_paths.txt`, que contém todos os links de PDF da página atual.
+    
+
+> Repita esse processo para **cada número de página** nos resultados de busca do SIAN para coletar todos os links de PDF. Salve todos os arquivos `.txt` dentro de uma pasta chamada `txt` e, depois, coloque essa pasta na mesma pasta do script `download_pdfs.py`.
+
+### 2. Execute o script Python de download
+
+```bash
+python download_pdfs.py
+```
+
+Isso irá:
+
+-   Ler todos os arquivos `.txt` dentro da pasta `txt`.
+-   Baixar cada PDF listado nesses arquivos a partir da URL base (`http://imagem.sian.an.gov.br/acervo/derivadas`).
+-   Salvá-los na pasta `pdfs/`.
+-   Registrar todos os status dos downloads (sucesso/falha) em um arquivo com data e hora dentro da pasta `logs/`.
+    
+
+## Observações
+
+-   O script Python usa multithreading (até 10 threads ou `2 x núcleos da CPU`).
+-   Ele tenta novamente até 3 vezes caso um download falhe.
+-   Somente links válidos de `.pdf` serão baixados.
+-   Os logs incluem mensagens de erro detalhadas em caso de falhas.
